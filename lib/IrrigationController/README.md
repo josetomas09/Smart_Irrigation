@@ -13,10 +13,8 @@ Clase central que encapsula la lógica del sistema de riego. Evalúa las condici
 #include "IrrigationController.h"
 #include "Relay.h"
 
-// Instanciamos el hardware
 Relay valvulaZona1(22, false);
 
-// Inyectamos el relé al controlador
 IrrigationController controlador(&valvulaZona1);
 
 void setup() {
@@ -24,10 +22,7 @@ void setup() {
 }
 
 void loop() {
-    // Método no bloqueante que evalúa si el riego debe iniciar o detenerse
     controlador.update(); 
-    
-    // Ejemplo de activación manual externa (ej. evento recibido desde la app)
-    // controlador.startManualIrrigation(10); // Inicia riego por 10 minutos
+    controlador.startManualIrrigation(10); // Inicia riego por 10 minutos
 }
 ```
