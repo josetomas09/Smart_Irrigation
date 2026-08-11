@@ -1,9 +1,9 @@
-#include "../include/config.h"
+#include "../include/Config.h"
 
 #include <Arduino.h>
 #include <Wire.h>
 #include "BlynkEdgent.h"
-#include <communication.h>
+#include <Communication.h>
 #include <DHT.h>
 #include <Relay.h>
 #include <RTClib.h>
@@ -270,5 +270,5 @@ void systemStatusLedControl() {
 
 // TO-DO: Gate status
 BLYNK_READ(V4) {
-    Blynk.virtualWrite(V4, Communication::recivedChar);
+    Blynk.virtualWrite(V4, Communication::receivedChar);
 }

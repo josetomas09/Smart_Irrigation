@@ -1,7 +1,7 @@
 #include "Communication.h"
 #include <Arduino.h>
 
-char Communication::recivedChar = 0;
+char Communication::receivedChar = 0;
 
 void Communication::begin() {
 
@@ -44,13 +44,13 @@ bool Communication::isWifiConnected() {
 
 void Communication::onDataReceived(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     
-    if(data_len != sizeof(recivedChar) || data_len <= 0){ 
+    if(data_len != sizeof(receivedChar) || data_len <= 0){ 
         Serial.println("Error: Tamaño de dato recibido incorrecto");
         return;
     }else {
-        memcpy(&recivedChar, data, sizeof(recivedChar));
+        memcpy(&receivedChar, data, sizeof(receivedChar));
         Serial.print("Dato recibido via ESP-NOW: ");
-        Serial.println(recivedChar);
+        Serial.println(receivedChar);
     }
     
 }

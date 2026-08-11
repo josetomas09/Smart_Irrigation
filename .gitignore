@@ -15,8 +15,7 @@ data/
 *.littlefs
 
 # Ignore local config with credentials
-/include/config.h
-include/config.h
+include/Config.h
 
 # OS files
 .DS_Store
@@ -31,3 +30,4 @@ Thumbs.db
 # User-specific files
 *.swp
 *~
+

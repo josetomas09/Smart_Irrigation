@@ -2,7 +2,7 @@
 #define RELAY_H
 
 #include <Arduino.h>
-#include "../../include/config.h"
+#include "../../include/Config.h"
 
 /**
  * @brief Class to control an individual relay

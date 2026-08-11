@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <Relay.h>
 #include <time.h>
-#include "../../include/config.h"
+#include "../../include/Config.h"
 
 
 #define MAX_IRRIGATION_RELAYS 2  // Maximum number of irrigation relays

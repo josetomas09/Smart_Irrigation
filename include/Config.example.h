@@ -1,13 +1,15 @@
 #ifndef CONFIG_EXAMPLE_H
 #define CONFIG_EXAMPLE_H
 
-// Copia este archivo a `include/config.h` y reemplaza los valores sensibles.
-// NO subas `include/config.h` a repositorios públicos.
+#include <stdint.h>
+
+// Copy this file to `include/Config.h` and replace the sensitive values.
+// Do not upload `include/Config.h` to public repositories.
 
 // Blynk Configuration
 #define BLYNK_TEMPLATE_ID "TMPL_xxx"
 #define BLYNK_TEMPLATE_NAME "Smart Irrigation"
-// #define BLYNK_AUTH_TOKEN "TU_TOKEN_AQUI"
+
 
 #define BLYNK_FIRMWARE_VERSION        "0.1.0"
 
@@ -17,9 +19,9 @@
 
 // NTP Config
 #define ntpServer "pool.ntp.org"
-const long gmtOffset_SEC = 0; // Ajusta según tu zona horaria
+const long gmtOffset_SEC = 0; // Adjust according to your time zone
 
-// ESPNOW Config (opcional)
+// ESPNOW Config (optional)
 const uint8_t MAC_SENDER_1[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 #endif // CONFIG_EXAMPLE_H
