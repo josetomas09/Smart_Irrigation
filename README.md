@@ -1,92 +1,64 @@
-# Smart Irrigation
+# Smart Irrigation System
 
-Proyecto de riego automático para ESP32 con integración Blynk, sensor DHT11, módulo RTC DS3231, y relés para controlar electroválvulas.
+![ESP32](https://img.shields.io/badge/ESP--32-blue?style=flat-square&logo=espressif)
+![PlatformIO](https://img.shields.io/badge/PlatformIO-white?style=flat-square&logo=platformio)
+![C++](https://img.shields.io/badge/C++-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)
+![Blynk](https://img.shields.io/badge/Blynk-IoT-11C281?style=flat-square)
 
-**Características principales**
-- Control de hasta 3 relés para riego (válvulas/LED estado).
-- Lectura periódica de temperatura y humedad desde un DHT11 y envío a Blynk.
-- Programación horaria de riego (inicio/fin) mediante widget `TimeInput` en Blynk.
-- Modo manual de riego desde Blynk.
-- Sincronización de hora por NTP y persistencia en RTC DS3231.
-- Guardado de últimas sincronizaciones y opciones en `Preferences` de ESP32.
-- Comunicación local mediante ESPNOW (configurable en `include/config.h`).
+Sistema de riego inteligente automatizado basado en el microcontrolador **ESP32** utilizando el framework de Arduino bajo el entorno **PlatformIO**. El sistema se conecta a la plataforma **Blynk** para permitir el monitoreo y control remoto via app movil o dashboard (PC).
 
-**Estructura del repositorio**
-- `platformio.ini` — Configuración de PlatformIO (env: `esp32`, LittleFS, dependencias).
-- `include/` — Cabeceras y configuración del proyecto (`config.h`, `Settings.h`, etc.).
-- `lib/` — Librerías locales modularizadas:
-  - `Comunication/` — Abstracción de WiFi/ESPNOW (`Communication.h`/`.cpp`).
-  - `IrrigationController/` — Lógica del riego y programación.
-  - `Relay/` — Clase para manejar relés.
-- `src/` — Código fuente principal (`main.cpp`).
-- `boards/partitions/` — Tablas de particiones para ESP32.
-- `test/` — Información de tests (README).
+### Funcionalidades Actuales
+*   **Control de Riego:** Activación del riego mediante horarios preestablecidos o de forma manual a demanda.
+*   **Monitoreo Ambiental:** Lectura y visualización en tiempo real de los niveles de temperatura y humedad.
 
-Hardware y pines (por defecto)
-- MCU: ESP32 (env `esp32dev` en `platformio.ini`).
-- Sensor DHT11: GPIO 5 (`DHTPIN`).
-- Relé Válvula Zona 1: GPIO 14 (`RELAY1_PIN`).
-- Relé Válvula Zona 2: GPIO 13 (`RELAY2_PIN`).
-- Relé LED Estado Sistema: GPIO 12 (`RELAY3_PIN`).
-- RTC DS3231: SDA GPIO 21, SCL GPIO 22.
+### Próximamente (Roadmap)
+*   **Automatización Dinámica:** Activación inteligente del riego basada en valores o umbrales específicos de temperatura y/o humedad.
+*   **Iluminación (Opcional):** Manejo de luces (220V) a través de módulos de relé.
+*   **Monitoreo de porton/puerta Garaje:** Lectura del estado de un portón de garaje, comunicándose con un segundo ESP32 a través del protocolo ESP-NOW.
 
-Estos pines están definidos en `src/main.cpp`.
+## Características Principales
+*   **Conectividad IoT:** Integración completa con Blynk (Wi-Fi) para control desde un dispositivo móvil o panel web.
+*   **Control Modular:** Librerías propias orientadas a objetos para la abstracción de componentes (`Relay`, `IrrigationController`, `Comunication`).
+*   **Actualizaciones Inalámbricas:** Estructura preparada para integrar actualizaciones OTA (Over-The-Air).
 
-Configuración
-- Credenciales WiFi y valores de Blynk/NTP se encuentran en `include/config.h`.
-  - Cambia `WIFI_SSID` y `WIFI_PASSWORD` por tus datos.
-  - Actualiza `BLYNK_TEMPLATE_ID` / `BLYNK_TEMPLATE_NAME` según tu plantilla Blynk.
-- Recomendación: NO subir credenciales sensibles a un repositorio público. Considera usar un archivo de configuración local ignorado por git.
+## Estructura del Proyecto
 
-Virtual Pins de Blynk (uso)
-- `V0` — Temperatura (float) enviada periódicamente.
-- `V1` — Humedad (float) enviada periódicamente.
-- `V2` — Toggle modo manual (1 = manual ON, 0 = manual OFF).
-- `V3` — Widget `TimeInput` para programaciones: el código procesa start/stop, sunrise/sunset y días activos.
-- `V4` — Terminal / estado / recepción de caracteres desde `Communication`.
-- Terminal virtual: Widget Terminal asignado a `V5` (usado para mensajes de log)
+El proyecto está organizado de manera modular para facilitar el mantenimiento, la lectura y la escalabilidad del código:
 
-Compilación y flasheo (PlatformIO)
-- Requisitos: PlatformIO (VS Code extension) y toolchain para ESP32.
-- Comandos:
-
-```bash
-# Compilar
-platformio run
-
-# Subir al dispositivo (asegúrate de seleccionar el puerto correcto)
-platformio run --target upload
-
-# Monitor serie
-platformio device monitor --baud 115200
+```text
+├── include/                    # Configuraciones globales y utilidades de Blynk (BlynkEdgent, SysUtils, etc.)
+├── lib/                        # Librerías desarrolladas a medida
+│   ├── Comunication/           # Gestión de conexión Wi-Fi, OTA y Blynk
+│   ├── IrrigationController/   # Lógica central, temporizadores y reglas del sistema de riego
+│   └── Relay/                  # Abstracción segura para el manejo de actuadores (bombas/electroválvulas)
+├── src/                        # Código fuente principal (main.cpp)
+└── platformio.ini              # Configuración del entorno, dependencias y placa objetivo
 ```
 
-Sistema de archivos
-- `board_build.filesystem = littlefs` en `platformio.ini` — el proyecto está configurado para usar LittleFS.
-- Si necesitas cargar archivos a LittleFS, usa las herramientas de PlatformIO para subir el sistema de archivos.
+## Requisitos de Hardware
+*   Placa de desarrollo ESP32 (probado con ESP32 NodeMCU DevKit V1).
+*   Módulo de Relés (ej. 5V, optoacoplado).
+*   Bomba de agua o electroválvula (12V/24V/220V según la necesidad).
+*   Sensores de humedad (opcional pero recomendado).
 
-Detalles de software relevantes
-- Dependencias (declaradas en `platformio.ini`):
-  - `Blynk` (para control remoto y dashboard)
-  - `Adafruit DHT sensor library` (DHT11)
-  - `RTClib` (DS3231)
-  - `Adafruit BusIO` y `Adafruit Unified Sensor`
-- El código central está en `src/main.cpp`: inicializa periféricos, gestiona timers (BlynkTimer) y registra callbacks Blynk.
-- `IrrigationController` encapsula la lógica de programación y ejecución del riego. Revisa `lib/IrrigationController/IrrigationController.h` y `.cpp` para detalles sobre horarios, sunrise/sunset y control de relés.
+## Instalación y Configuración
 
-Cómo contribuir / extender
-- Añadir más relés: `IrrigationController` soporta hasta `MAX_IRRIGATION_RELAYS` (ver `IrrigationController.h`). Si necesitas más, aumenta el valor y revisa la lógica de almacenamiento.
-- Integrar otros sensores: crea nuevas clases en `lib/` y regístalas en `src/main.cpp`.
-- Mejorar seguridad: mover credenciales fuera de `config.h` e implementar un método más seguro de gestión de secretos.
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/josetomas09/Smart_Irrigation.git
+    ```
+2.  **Abrir con PlatformIO:**
+    Abre la carpeta del proyecto en VS Code con la extensión PlatformIO instalada. El archivo `platformio.ini` descargará las dependencias automáticamente.
+3.  **Configurar credenciales:**
+    Renombra el archivo `include/config.h(example)` a `include/config.h`. Edita el archivo para incluir tus credenciales de red Wi-Fi y el *Auth Token* provisto por tu proyecto de Blynk.
+4.  **Compilar y Subir:**
+    Conecta el ESP32 por USB y ejecuta las tareas *Build* y *Upload* desde PlatformIO.
 
-Mantenimiento y pruebas
-- Prueba localmente con `platformio run` y `platformio device monitor`.
-- Para depurar, usa el `WidgetTerminal` de Blynk (V5) y la salida serie (`Serial`) a 115200.
+## Documentación de Librerías Internas
+Para fomentar la reutilización de código, cada módulo principal cuenta con su propia documentación detallada:
+*   [`Comunication`](lib/Comunication/README.md) - Gestiona la conexión inicial vía Wi-Fi para enlazar con Blynk.
+*   [`IrrigationController`](lib/IrrigationController/README.md) - Define la lógica de control del riego.
+*   [`Relay`](lib/Relay/README.md) - Abstracción de bajo nivel para el manejo seguro de los pines GPIO y estados de relé.
 
-Archivos clave para revisar
-- [platformio.ini](platformio.ini)
-- [src/main.cpp](src/main.cpp)
-- [include/config.h](include/config.h)
-- [lib/IrrigationController/IrrigationController.h](lib/IrrigationController/IrrigationController.h)
-- [lib/Relay/Relay.h](lib/Relay/Relay.h)
-- [lib/Comunication/Communication.h](lib/Comunication/Communication.h)
+## 📄 License
+This project is licensed under the [MIT](LICENSE) License.
