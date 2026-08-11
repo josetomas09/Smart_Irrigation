@@ -23,18 +23,18 @@ void Schedule::reset() {
 }
 
 // ============================================================
-//              Clase IrrigationController
+//              IrrigationController Class
 // ============================================================
 
 IrrigationController::IrrigationController()
     : irrigationRelayCount(0), manualMode(false), isWatering(false) {
     
-    // Inicializar array de relays de riego
+    // Initialize irrigation relays array
     for(int i = 0; i < MAX_IRRIGATION_RELAYS; i++) {
         irrigationRelays[i] = nullptr;
     }
     
-    // Valores por defecto para sunrise/sunset
+    // Default values for sunrise/sunset
     sunriseSecs = (7 * 3600) * 60;          // 07:00
     sunsetSecs  = (19 * 3600) + (30 * 60);  // 19:30
 }

@@ -6,16 +6,17 @@
 #include <time.h>
 #include "../../include/config.h"
 
-#define MAX_IRRIGATION_RELAYS 3  // Máximo número de relays para riego 
+
+#define MAX_IRRIGATION_RELAYS 2  // Maximum number of irrigation relays
 
 
 /**
- * @brief Estructura para almacenar la programación de riego
+ * @brief Structure to store irrigation schedule
  */
 struct Schedule {
     long startTimeInSecs;
     long stopTimeInSecs;
-    bool activeDays[7];  // Índices 0-6 para Lun-Dom
+    bool activeDays[7];  // Indices 0-6 for Mon-Sun
     bool isScheduled;
 
     bool startAtSunrise;
@@ -28,21 +29,21 @@ struct Schedule {
 };
 
 /**
- * @brief Controlador principal del sistema de riego automático
- * 
- * Maneja los relays específicos para riego.
- * 
+ * @brief Main controller for the automatic irrigation system
+ *
+ * Manages the relays dedicated to irrigation.
+ *
  */
 class IrrigationController {
 private:
-    Relay* irrigationRelays[MAX_IRRIGATION_RELAYS];  // Relays del sistema de riego
-    uint8_t irrigationRelayCount;                    // Cantidad de relays de riego activos
+    Relay* irrigationRelays[MAX_IRRIGATION_RELAYS];  // Irrigation system relays
+    uint8_t irrigationRelayCount;                    // Number of active irrigation relays
     
     Schedule schedule;
     bool manualMode;
     bool isWatering;
     
-    // Sunrise/Sunset en segundos desde medianoche
+    // Sunrise/Sunset in seconds from midnight
     long sunriseSecs;
     long sunsetSecs;
     
@@ -59,41 +60,41 @@ public:
     IrrigationController();
     
     /**
-     * @brief Añade un relay al sistema de riego
-     * @param relay Puntero al relay a añadir (bomba, válvula, etc.)
-     * @return true si se añadió correctamente, false si se alcanzó el máximo
+     * @brief Adds a relay to the irrigation system
+     * @param relay Pointer to the relay to add (pump, valve, etc.)
+     * @return true if added successfully, false if the maximum was reached
      */
     bool addIrrigationRelay(Relay* relay);
     
     /**
-     * @brief Inicializa el controlador
+     * @brief Initializes the controller
      */
     void begin();
     
     /**
-     * @brief Actualiza el estado del riego (llamar periódicamente)
+     * @brief Updates the irrigation state (call periodically)
      */
     void update();
     
     /**
-     * @brief Activa el riego manual
+     * @brief Enable manual irrigation
      */
     void enableManualMode();
     
     /**
-     * @brief Desactiva el riego manual
+     * @brief Disable manual irrigation
      */
     void disableManualMode();
     
     /**
-     * @brief Configura un horario de riego
-     * @param startSecs Hora de inicio en segundos desde medianoche
-     * @param stopSecs Hora de fin en segundos desde medianoche
+     * @brief Configure an irrigation schedule
+     * @param startSecs Start time in seconds since midnight
+     * @param stopSecs Stop time in seconds since midnight
      */
     void setSchedule(long startSecs, long stopSecs);
     
     /**
-     * @brief Configura inicio/fin en sunrise/sunset
+     * @brief Configure start/stop at sunrise/sunset
      */
     void setStartAtSunrise(bool value);
     void setStartAtSunset(bool value);
@@ -101,29 +102,29 @@ public:
     void setStopAtSunset(bool value);
     
     /**
-     * @brief Activa/desactiva un día de la semana
-     * @param day Día (1=Lunes, 7=Domingo)
-     * @param active true para activar, false para desactivar
+     * @brief Enable/disable a weekday
+     * @param day Day (1=Monday, 7=Sunday)
+     * @param active true to enable, false to disable
      */
     void setDayActive(int day, bool active);
     
     /**
-     * @brief Limpia toda la programación
+     * @brief Clear the entire schedule
      */
     void clearSchedule();
     
     /**
-     * @brief Configura sunrise/sunset manualmente
+     * @brief Set sunrise/sunset values manually
      */
     void setSunriseSunset(long sunrise, long sunset);
     
     /**
-     * @brief Obtiene el estado actual del riego
+     * @brief Get the current watering state
      */
     bool getIsWatering() const;
     
     /**
-     * @brief Obtiene el modo manual
+     * @brief Get the manual mode state
      */
     bool getManualMode() const;
 };

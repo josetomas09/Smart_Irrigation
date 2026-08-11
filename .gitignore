@@ -1,5 +1,33 @@
 .pio/
+.pioenvs/
+libdeps/
 build/
-include/config.h
+
 
 .vscode/
+.env
+*.bin
+*.elf
+*.map
+*.log
+# LittleFS / filesystem image
+data/
+*.littlefs
+
+# Ignore local config with credentials
+/include/config.h
+include/config.h
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PlatformIO specific cache
+.cache/
+
+# Ignore compiled object files
+*.o
+
+# User-specific files
+*.swp
+*~

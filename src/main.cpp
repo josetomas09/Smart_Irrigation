@@ -31,7 +31,7 @@ RTC_DS3231 rtc;
 BlynkTimer timer;
 Preferences preferences;
 
-// Relays de riego
+// Irrigation relays
 Relay electrovalvula_1(RELAY1_PIN, "Valvula Zona 1");
 Relay electrovalvula_2(RELAY2_PIN, "Valvula Zona 2");
 
@@ -87,9 +87,9 @@ void setup(){
     ntpSync();
   }
 
-  timer.setInterval(30000L, sendTempAndHum);            // Enviar temperatura y humedad cada 30 segundos
-  timer.setInterval(30000L, [](){ riego.update(); });   // Actualizar estado del riego cada 30 segundos
-  timer.setInterval(86400000L, dailyRtcSync);           // Cada 24hs, resync RTC <- NTP
+    timer.setInterval(30000L, sendTempAndHum);            // Send temperature and humidity every 30 seconds
+    timer.setInterval(30000L, [](){ riego.update(); });   // Update irrigation state every 30 seconds
+    timer.setInterval(86400000L, dailyRtcSync);           // Every 24h, resync RTC <- NTP
 
 }
 
@@ -206,7 +206,7 @@ void sendTempAndHum(){
     Blynk.virtualWrite(V1, hum);
 }
 
-// Riego manual
+// Manual irrigation
 BLYNK_WRITE(V2) {
     int manual = param.asInt();
     if(manual == 1) {
@@ -222,12 +222,12 @@ BLYNK_WRITE(V3) {
     
     riego.clearSchedule();
 
-    // 1. Configurar horario de inicio
+    // 1. Configure start time
     if(t.hasStartTime()) {
         long startSecs = t.getStartHour() * 3600 + t.getStartMinute() * 60 + t.getStartSecond();
         long stopSecs = -1;
         
-        // 2. Configurar horario de fin
+        // 2. Configure stop time
         if(t.hasStopTime()) {
             stopSecs = t.getStopHour() * 3600 + t.getStopMinute() * 60 + t.getStopSecond();
         }
@@ -241,14 +241,14 @@ BLYNK_WRITE(V3) {
         riego.setStartAtSunset(true);
     }
 
-    // Configurar fin en sunrise/sunset si aplica
+    // Configure stop at sunrise/sunset if applicable
     if(t.isStopSunrise()) {
         riego.setStopAtSunrise(true);
     } else if(t.isStopSunset()) {
         riego.setStopAtSunset(true);
     }
 
-    // 3. Configurar días activos
+    // 3. Configure active days
     for(int i = 1; i <= 7; i++) {
         riego.setDayActive(i, t.isWeekdaySelected(i));
     }
@@ -268,7 +268,7 @@ void systemStatusLedControl() {
     }
 }
 
-// TO-DO: Estado del porton
+// TO-DO: Gate status
 BLYNK_READ(V4) {
     Blynk.virtualWrite(V4, Communication::recivedChar);
 }

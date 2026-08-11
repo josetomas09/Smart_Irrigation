@@ -5,10 +5,10 @@
 #include "../../include/config.h"
 
 /**
- * @brief Clase para controlar un relay individual
- * 
- * Permite encender/apagar relays y consultar su estado.
- * Cada relay es independiente y puede usarse para cualquier propósito.
+ * @brief Class to control an individual relay
+ *
+ * Allows turning relays on/off and querying their state.
+ * Each relay is independent and can be used for any purpose.
  */
 class Relay {
 private:
@@ -19,8 +19,8 @@ private:
 public:
     /**
      * @brief Constructor
-     * @param p Pin GPIO del relay
-     * @param relayName Nombre opcional del relay
+     * @param p GPIO pin of the relay
+     * @param relayName Optional name for the relay
      */
     
     Relay(uint8_t p, String relayName = "");
