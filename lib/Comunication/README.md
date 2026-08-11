@@ -14,12 +14,10 @@ Módulo encargado de gestionar la capa de conectividad del ESP32. Función princ
 Communication redIoT;
 
 void setup() {
-    // Inicializa parámetros de red, credenciales y conexión a Blynk
     redIoT.begin(); 
 }
 
 void loop() {
-    // Mantiene viva la conexión y procesa los callbacks de Blynk
     redIoT.run(); 
 }
 ```
