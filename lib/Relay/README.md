@@ -9,12 +9,10 @@ Permite inicializar el pin, definir su lógica de estado activo y cambiar el est
 ```cpp
 #include "Relay.h"
 
-// Inicializa un relé en el pin 23. 
 // El segundo parámetro (opcional) indica si es activo en ALTO (true) o BAJO (false).
 Relay miBomba(23, false); 
 
 void setup() {
-    // Configura el pinMode internamente y asegura que inicie apagado
     miBomba.begin(); 
 }
 
