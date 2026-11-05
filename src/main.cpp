@@ -25,6 +25,7 @@ uint8_t RELAY3_PIN  = 12;
 uint8_t RTC_SDA_PIN = 21;
 uint8_t RTC_SCL_PIN = 22;
 bool rtcPresent = false;
+bool cloudStarted = false;
 
 DHT dht(DHTPIN, DHT11);
 RTC_DS3231 rtc;
@@ -40,6 +41,7 @@ WidgetTerminal terminal(V5);
 
 IrrigationController riego;
 
+void startCloudServices();
 bool ntpSync();
 void updateIrrigation();
 void sendTempAndHum();
@@ -82,21 +84,19 @@ void setup(){
 
   riego.begin();
 
-  if(Communication::isWifiConnected()){
-    BlynkEdgent.begin();
-    delay(1000);
-    ntpSync();
-  }
+  startCloudServices();
 
-    timer.setInterval(30000L, sendTempAndHum);            // Send temperature and humidity every 30 seconds
-    timer.setInterval(30000L, updateIrrigation);          // Update irrigation state every 30 seconds
-    timer.setInterval(86400000L, dailyRtcSync);           // Every 24h, resync RTC <- NTP
+  timer.setInterval(30000L, sendTempAndHum);            // Send temperature and humidity every 30 seconds
+  timer.setInterval(30000L, updateIrrigation);          // Update irrigation state every 30 seconds
+  timer.setInterval(86400000L, dailyRtcSync);           // Every 24h, resync RTC <- NTP
 
 }
 
 void loop() {
-  if(Communication::isWifiConnected()){
-     BlynkEdgent.run();
+  if (!cloudStarted) {
+    startCloudServices();
+  } else if (Communication::isWifiConnected()) {
+    BlynkEdgent.run();
   }
   timer.run();
   systemStatusLedControl();
@@ -182,6 +182,14 @@ void dailyRtcSync() {
     }
 }
 
+void startCloudServices() {
+    if (cloudStarted || !Communication::isWifiConnected()) return;
+    BlynkEdgent.begin();
+    delay(1000);
+    ntpSync();
+    cloudStarted = true;
+}
+
 /* 
     ========================================================
                 4. Blynk Functions
@@ -237,33 +245,26 @@ BLYNK_WRITE(V3) {
     
     riego.clearSchedule();
 
-    // 1. Configure start time
-    if(t.hasStartTime()) {
-        long startSecs = t.getStartHour() * 3600 + t.getStartMinute() * 60 + t.getStartSecond();
-        long stopSecs = -1;
-        
-        // 2. Configure stop time
-        if(t.hasStopTime()) {
-            stopSecs = t.getStopHour() * 3600 + t.getStopMinute() * 60 + t.getStopSecond();
-        }
-        
-        if(stopSecs != -1) {
-            riego.setSchedule(startSecs, stopSecs);
-        }
-    } else if(t.isStartSunrise()) {
-        riego.setStartAtSunrise(true);
-    } else if(t.isStartSunset()) {
-        riego.setStartAtSunset(true);
+    bool hasStart = t.hasStartTime() || t.isStartSunrise() || t.isStartSunset();
+    bool hasStop  = t.hasStopTime()  || t.isStopSunrise()  || t.isStopSunset();
+
+    if (hasStart && hasStop) {
+        long startSecs = t.hasStartTime() ? t.getStartHour() * 3600L + t.getStartMinute() * 60L + t.getStartSecond() : -1;
+        long stopSecs  = t.hasStopTime()  ? t.getStopHour()  * 3600L + t.getStopMinute()  * 60L + t.getStopSecond()  : -1;
+        riego.setSchedule(startSecs, stopSecs);
+
+        if (t.isStartSunrise())      riego.setStartAtSunrise(true);
+        else if (t.isStartSunset())  riego.setStartAtSunset(true);
+        if (t.isStopSunrise())       riego.setStopAtSunrise(true);
+        else if (t.isStopSunset())   riego.setStopAtSunset(true);
     }
 
-    // Configure stop at sunrise/sunset if applicable
     if(t.isStopSunrise()) {
         riego.setStopAtSunrise(true);
     } else if(t.isStopSunset()) {
         riego.setStopAtSunset(true);
     }
 
-    // 3. Configure active days
     for(int i = 1; i <= 7; i++) {
         riego.setDayActive(i, t.isWeekdaySelected(i));
     }
@@ -285,6 +286,8 @@ void systemStatusLedControl() {
 
 BLYNK_CONNECTED() {
     publishWateringState();
+    Blynk.syncVirtual(V3);
+    terminal.flush();
 }
 
 // TO-DO: Gate status

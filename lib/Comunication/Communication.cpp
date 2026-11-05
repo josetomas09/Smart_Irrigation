@@ -10,9 +10,20 @@ void Communication::begin() {
 
 
     Serial.print("Iniciando WiFi ..");
-    while(WiFi.status() != WL_CONNECTED) {
+    Serial.print("Iniciando WiFi ..");
+    const unsigned long WIFI_TIMEOUT_MS = 15000;
+    unsigned long start = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - start < WIFI_TIMEOUT_MS) {
         Serial.print('.');
-        delay(1000);
+        delay(500);
+    }
+
+    if(WiFi.status() == WL_CONNECTED) {
+        Serial.println("\nWiFi conectado exitosamente");
+        Serial.print("IP: ");
+        Serial.println(WiFi.localIP());
+    } else {
+        Serial.println("\nSin WiFi: se continua sin conexion y se reintenta en segundo plano");
     }
 
     if(WiFi.status() == WL_CONNECTED) {
