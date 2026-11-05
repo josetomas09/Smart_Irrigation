@@ -35,7 +35,7 @@ IrrigationController::IrrigationController()
     }
     
     // Default values for sunrise/sunset
-    sunriseSecs = (7 * 3600) * 60;          // 07:00
+    sunriseSecs = 7 * 3600;                 // 07:00
     sunsetSecs  = (19 * 3600) + (30 * 60);  // 19:30
 }
 

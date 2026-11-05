@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf8'?>
+<testsuites name="C:\Users\joset\Documents\Programacion\Smart_Irrigation" platformio_version="6.2.0"
+    tests="17" errors="0" failures="0" time="2.0011379718780518">
+    <testsuite name="esp32:test_irrigation_controller" tests="0" errors="0" failures="0" skipped="0"
+        time="0" />
+    <testsuite name="esp32:test_relay" tests="0" errors="0" failures="0" skipped="0" time="0" />
+    <testsuite name="native:test_irrigation_controller" tests="13" errors="0" failures="0"
+        skipped="0" time="1.021747350692749" timestamp="2026-11-04T19:51:57">
+        <testcase name="test_PU05_maximo_dos_reles" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="186" />
+        <testcase name="test_PU06_dentro_de_ventana_riega" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="187" />
+        <testcase name="test_PU07_limite_inferior_inclusivo" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="188" />
+        <testcase name="test_PU08_limite_superior_exclusivo" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="189" />
+        <testcase name="test_PU09_ventana_cruza_medianoche" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="190" />
+        <testcase name="test_PU10_dia_inhabilitado_no_riega" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="191" />
+        <testcase name="test_PU11_inicio_igual_a_fin_no_riega" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="192" />
+        <testcase name="test_PU12_dias_fuera_de_rango_ignorados" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="193" />
+        <testcase name="test_PU13_manual_tiene_precedencia" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="194" />
+        <testcase name="test_PU14_desactivar_manual_apaga_reles" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="195" />
+        <testcase name="test_PU15_amanecer_atardecer" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="196" />
+        <testcase name="test_PU16_sin_hora_valida_no_riega" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="197" />
+        <testcase name="test_PU17_clear_schedule_detiene_riego" time="0" status="PASSED"
+            file="test\test_irrigation_controller\test_irrigation_controller.cpp" line="198" />
+    </testsuite>
+    <testsuite name="native:test_relay" tests="4" errors="0" failures="0" skipped="0"
+        time="0.9793906211853027" timestamp="2026-11-04T19:51:58">
+        <testcase name="test_PU01_constructor_deja_rele_desenergizado" time="0" status="PASSED"
+            file="test\test_relay\test_relay.cpp" line="56" />
+        <testcase name="test_PU02_on_activa_rele" time="0" status="PASSED"
+            file="test\test_relay\test_relay.cpp" line="57" />
+        <testcase name="test_PU03_off_desactiva_rele" time="0" status="PASSED"
+            file="test\test_relay\test_relay.cpp" line="58" />
+        <testcase name="test_PU04_toggle_alterna_estado" time="0" status="PASSED"
+            file="test\test_relay\test_relay.cpp" line="59" />
+    </testsuite>
+</testsuites>

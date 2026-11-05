@@ -3,7 +3,7 @@
 Relay::Relay(uint8_t p, String relayName) 
     : pin(p), state(false), name(relayName) {
     pinMode(pin, OUTPUT);
-    digitalWrite(pin, LOW);
+    digitalWrite(pin, HIGH);
 }
 
 void Relay::on() {
