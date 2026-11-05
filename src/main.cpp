@@ -41,6 +41,7 @@ WidgetTerminal terminal(V5);
 IrrigationController riego;
 
 bool ntpSync();
+void updateIrrigation();
 void sendTempAndHum();
 void syncSystemTimeFromRtc();
 void dailyRtcSync();
@@ -88,7 +89,7 @@ void setup(){
   }
 
     timer.setInterval(30000L, sendTempAndHum);            // Send temperature and humidity every 30 seconds
-    timer.setInterval(30000L, [](){ riego.update(); });   // Update irrigation state every 30 seconds
+    timer.setInterval(30000L, updateIrrigation);          // Update irrigation state every 30 seconds
     timer.setInterval(86400000L, dailyRtcSync);           // Every 24h, resync RTC <- NTP
 
 }
@@ -187,6 +188,20 @@ void dailyRtcSync() {
     ========================================================
 */
 
+void publishWateringState() {
+    Blynk.virtualWrite(V2, riego.getIsWatering() ? 1 : 0);
+}
+
+void updateIrrigation() {
+    static bool lastState = false;
+    riego.update();
+    bool current = riego.getIsWatering();
+    if (current != lastState) {
+        publishWateringState();
+        lastState = current;
+    }
+}
+
 void sendTempAndHum(){
     float temp = dht.readTemperature();
     float hum = dht.readHumidity();
@@ -266,6 +281,10 @@ void systemStatusLedControl() {
     } else {
         ledSystemStatus.on();
     }
+}
+
+BLYNK_CONNECTED() {
+    publishWateringState();
 }
 
 // TO-DO: Gate status

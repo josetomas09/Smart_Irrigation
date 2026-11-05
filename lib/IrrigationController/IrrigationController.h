@@ -42,6 +42,7 @@ private:
     Schedule schedule;
     bool manualMode;
     bool isWatering;
+    bool scheduleOverridden;
     
     // Sunrise/Sunset in seconds from midnight
     long sunriseSecs;

@@ -27,7 +27,7 @@ void Schedule::reset() {
 // ============================================================
 
 IrrigationController::IrrigationController()
-    : irrigationRelayCount(0), manualMode(false), isWatering(false) {
+    : irrigationRelayCount(0), manualMode(false), isWatering(false), scheduleOverridden(false) {
     
     // Initialize irrigation relays array
     for(int i = 0; i < MAX_IRRIGATION_RELAYS; i++) {
@@ -168,6 +168,12 @@ void IrrigationController::update() {
     
     bool shouldBeOn = shouldWaterNow();
     
+    if(!shouldBeOn) {
+        scheduleOverridden = false;
+    }else if(scheduleOverridden) {
+        shouldBeOn = false;
+    }
+
     if(shouldBeOn && !isWatering) {
         startWatering();
         Serial.println("Activado por Horario");
@@ -186,6 +192,11 @@ void IrrigationController::enableManualMode() {
 void IrrigationController::disableManualMode() {
     manualMode = false;
     stopWatering();
+
+    if(shouldWaterNow()) {
+        scheduleOverridden = true;
+        Serial.println("Ciclo programado cancelado manualmente");
+    }
     Serial.println("Modo Manual: OFF");
 }
 
@@ -227,6 +238,7 @@ void IrrigationController::setDayActive(int day, bool active) {
 
 void IrrigationController::clearSchedule() {
     schedule.reset();
+    scheduleOverridden = false;
     Serial.println("Programación eliminada");
 }
 

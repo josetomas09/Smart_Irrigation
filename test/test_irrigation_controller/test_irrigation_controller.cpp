@@ -181,6 +181,43 @@ void test_PU17_clear_schedule_detiene_riego() {
     assertWatering(c, false);
 }
 
+void test_PU18_apagar_manual_cancela_ciclo_en_curso() {
+    IrrigationController c; addRelays(c);
+    c.setSchedule(secs(18, 0), secs(18, 5));
+    c.setDayActive(1, true);
+    setClock(18, 2, 0);
+    c.update();
+    assertWatering(c, true);
+
+    c.enableManualMode();
+    assertWatering(c, true);
+
+    c.disableManualMode();
+    assertWatering(c, false);
+
+    setClock(18, 2, 30);
+    c.update();
+    assertWatering(c, false);
+}
+
+void test_PU19_cancelacion_dura_solo_la_ventana_actual() {
+    IrrigationController c; addRelays(c);
+    c.setSchedule(secs(18, 0), secs(18, 5));
+    c.setDayActive(1, true);
+    setClock(18, 2, 0);
+    c.update();
+    c.enableManualMode();
+    c.disableManualMode();
+
+    setClock(18, 6, 0);
+    c.update();
+    assertWatering(c, false);
+
+    setClock(18, 1, 0);
+    c.update();
+    assertWatering(c, true);
+}
+
 static int runTests() {
     UNITY_BEGIN();
     RUN_TEST(test_PU05_maximo_dos_reles);
@@ -196,6 +233,8 @@ static int runTests() {
     RUN_TEST(test_PU15_amanecer_atardecer);
     RUN_TEST(test_PU16_sin_hora_valida_no_riega);
     RUN_TEST(test_PU17_clear_schedule_detiene_riego);
+    RUN_TEST(test_PU18_apagar_manual_cancela_ciclo_en_curso);
+    RUN_TEST(test_PU19_cancelacion_dura_solo_la_ventana_actual);
     return UNITY_END();
 }
 
